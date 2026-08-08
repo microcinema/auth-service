@@ -1,3 +1,4 @@
+import { RpcStatus } from '@microcinema/common'
 import { Injectable } from '@nestjs/common'
 import { RpcException } from '@nestjs/microservices'
 import { createHash } from 'node:crypto'
@@ -31,15 +32,21 @@ export class OtpService {
 			`otp:${type}:${identifier}`
 		)
 
-		if (!storedHash) throw new RpcException('Invalid or expired OTP')
+		if (!storedHash)
+			throw new RpcException({
+				code: RpcStatus.NOT_FOUND,
+				details: 'Invalid or expired OTP'
+			})
 
 		const incomingHash = createHash('sha256').update(code).digest('hex')
 
 		if (incomingHash !== storedHash)
-			throw new RpcException('Invalid or expired OTP')
+			throw new RpcException({
+				code: RpcStatus.NOT_FOUND,
+				details: 'Invalid or expired OTP'
+			})
 
 		await this.redisService.del(`otp:${type}:${identifier}`)
-
 	}
 
 	private generateCode() {

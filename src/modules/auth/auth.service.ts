@@ -1,3 +1,4 @@
+import { RpcStatus } from '@microcinema/common'
 import type {
 	SendOtpRequest,
 	SendOtpResponse,
@@ -61,7 +62,11 @@ export class AuthService {
 			account = await this.authRepository.findByPhone(identifier)
 		else account = await this.authRepository.findByEmail(identifier)
 
-		if (!account) throw new RpcException('Account not found')
+		if (!account)
+			throw new RpcException({
+				code: RpcStatus.NOT_FOUND,
+				details: 'Account not found'
+			})
 
 		if (type === 'phone' && !account.isPhoneVerified)
 			await this.authRepository.update(account.id, {
