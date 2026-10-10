@@ -1,5 +1,6 @@
 import { RpcStatus } from '@microcinema/common'
 import type {
+	RefreshRequest,
 	SendOtpRequest,
 	SendOtpResponse,
 	VerifyOtpRequest
@@ -95,6 +96,21 @@ export class AuthService {
 			})
 
 		return this.generateTokens(account.id)
+	}
+
+	public async refresh(data: RefreshRequest) {
+		const { refreshToken } = data
+
+		const result = this.passportService.verify(refreshToken)
+
+		if (!result.valid) {
+			throw new RpcException({
+				code: RpcStatus.UNAUTHENTICATED,
+				details: result.reason
+			})
+		}
+
+		return this.generateTokens(result.userId)
 	}
 
 	private generateTokens(userId: string) {
