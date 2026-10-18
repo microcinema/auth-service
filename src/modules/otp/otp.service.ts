@@ -20,7 +20,7 @@ export class OtpService {
 			60 * 5
 		)
 
-		return code
+		return { code, hash }
 	}
 
 	public async verify(
