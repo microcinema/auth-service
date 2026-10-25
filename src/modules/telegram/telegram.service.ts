@@ -90,7 +90,7 @@ export class TelegramService {
 
 		const secretKey = createHash('sha256')
 			.update(`${this.BOT_ID}:${this.BOT_TOKEN}`)
-			.digest('hex')
+			.digest()
 
 		const hmac = createHmac('sha256', secretKey)
 			.update(dataCheckString)

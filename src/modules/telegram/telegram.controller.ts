@@ -21,6 +21,6 @@ export class TelegramController {
 	public async verify(
 		data: TelegramVerifyRequest
 	): Promise<TelegramVerifyResponse> {
-		return this.telegramService.verify()
+		return this.telegramService.verify(data)
 	}
 }
